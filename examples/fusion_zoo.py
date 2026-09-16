@@ -97,13 +97,14 @@ def build_and_run(text_backend: str, batch_size: int, seq_len: int, device_name:
         return fusion(mods)
 
     def transformer_fusion():
-        mods = [
-            torch.nn.functional.adaptive_avg_pool1d(vision.transpose(1, 2), 32).mean(-1),
-            torch.nn.functional.adaptive_avg_pool1d(audio.transpose(1, 2), 32).mean(-1),
-            torch.nn.functional.adaptive_avg_pool1d(text.transpose(1, 2), 32).mean(-1),
-        ]
-        # All three need the same d_model for TransformerFusion.
-        return TransformerFusion(d_model=32, nhead=4, num_layers=1).to(device)(mods)
+        # Project each pooled modality to the same d_model before stacking.
+        d_model = 32
+        mods = []
+        for tensor in (vision, audio, text):
+            pooled = tensor.mean(dim=1)
+            proj = torch.nn.Linear(pooled.shape[-1], d_model).to(device)
+            mods.append(proj(pooled))
+        return TransformerFusion(d_model=d_model, nhead=4, num_layers=1).to(device)(mods)
 
     def early_transformer():
         fusion = EarlyFusionTransformer(n_features=VISION_DIM + AUDIO_DIM + text_dim).to(device)

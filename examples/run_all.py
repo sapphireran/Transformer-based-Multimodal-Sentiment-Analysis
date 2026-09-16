@@ -14,7 +14,18 @@ STEPS = (
     ("score toy labels", [sys.executable, str(EXAMPLES / "evaluate_toy.py"), "--write-json"]),
     ("fusion zoo forward", [sys.executable, str(EXAMPLES / "fusion_zoo.py"), "--write-json"]),
     ("GMTM forward", [sys.executable, str(EXAMPLES / "gmtm_forward.py"), "--write-json"]),
-    ("GMTM toy train", [sys.executable, str(EXAMPLES / "train_toy_gmtm.py"), "--epochs", "4", "--write-json"]),
+    (
+        "GMTM toy train",
+        [
+            sys.executable,
+            str(EXAMPLES / "train_toy_gmtm.py"),
+            "--epochs",
+            "6",
+            "--n-train",
+            "96",
+            "--write-json",
+        ],
+    ),
     ("toy modality ablation", [sys.executable, str(EXAMPLES / "ablate_toy_modalities.py"), "--write-json"]),
 )
 
@@ -22,10 +33,10 @@ STEPS = (
 def main() -> int:
     failures = 0
     for title, command in STEPS:
-        print("=" * 72)
-        print(title)
-        print(" ".join(command))
-        print("=" * 72)
+        print("=" * 72, flush=True)
+        print(title, flush=True)
+        print(" ".join(command), flush=True)
+        print("=" * 72, flush=True)
         result = subprocess.run(command, check=False)
         if result.returncode != 0:
             print(f"FAILED ({result.returncode}): {title}")

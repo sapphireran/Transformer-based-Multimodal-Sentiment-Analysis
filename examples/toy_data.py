@@ -80,26 +80,27 @@ def make_toy_batch(
 ) -> ToyBatch:
     """Build one aligned multimodal batch with labels in ``[-3, 3]``.
 
-    The latent sentiment is a weighted mix of the three modality means, with
-    text carrying most of the mass (the same qualitative pattern the MOSEI
-    ablation tables show). Noise keeps Acc-7 below 1.0 so the metric helpers
-    have something non-trivial to report.
+    Each clip draws a latent sentiment ``s ~ Uniform[-2.5, 2.5]``. That value
+    is written as a broadcast bias into all three streams (strongest in text,
+    weaker in audio/vision) so mean-pooling the text recovers most of ``s``.
+    The same qualitative pattern shows up in the MOSEI ablation tables.
+    Label noise keeps Acc-7 below 1.0.
     """
     text_dim = _require_backend(text_backend)
     rng = np.random.default_rng(seed)
 
-    vision = rng.normal(0.0, 1.0, size=(batch_size, seq_len, VISION_DIM)).astype(np.float32)
-    audio = rng.normal(0.0, 1.0, size=(batch_size, seq_len, AUDIO_DIM)).astype(np.float32)
-    text = rng.normal(0.0, 1.0, size=(batch_size, seq_len, text_dim)).astype(np.float32)
+    latent = rng.uniform(-2.5, 2.5, size=(batch_size, 1)).astype(np.float32)
+    cue = (latent / 3.0).reshape(batch_size, 1, 1)
 
-    vision_score = vision.mean(axis=(1, 2))
-    audio_score = audio.mean(axis=(1, 2))
-    text_score = text.mean(axis=(1, 2))
-    # Scale the almost-zero means so tanh is not stuck near 0.
-    latent = 8.0 * (0.15 * vision_score + 0.15 * audio_score + 0.70 * text_score)
-    labels = np.tanh(latent) * 3.0
-    labels = labels + rng.normal(0.0, label_noise, size=batch_size)
-    labels = np.clip(labels, -3.0, 3.0).astype(np.float32).reshape(batch_size, 1)
+    vision = rng.normal(0.0, 0.75, size=(batch_size, seq_len, VISION_DIM)).astype(np.float32)
+    audio = rng.normal(0.0, 0.75, size=(batch_size, seq_len, AUDIO_DIM)).astype(np.float32)
+    text = rng.normal(0.0, 0.75, size=(batch_size, seq_len, text_dim)).astype(np.float32)
+    vision = vision + 0.20 * cue
+    audio = audio + 0.20 * cue
+    text = text + 0.90 * cue
+
+    labels = latent + rng.normal(0.0, label_noise, size=(batch_size, 1)).astype(np.float32)
+    labels = np.clip(labels, -3.0, 3.0).astype(np.float32)
 
     return ToyBatch(
         vision=vision,

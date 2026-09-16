@@ -39,6 +39,11 @@ class TestToyData:
         assert batch.labels.min() >= -3.0
         assert batch.labels.max() <= 3.0
 
+    def test_labels_span_both_signs(self):
+        batch = make_toy_batch(batch_size=48, seq_len=8, seed=0)
+        assert batch.labels.min() < -1.0
+        assert batch.labels.max() > 1.0
+
     def test_glove_text_width(self):
         batch = make_toy_batch(batch_size=3, seq_len=4, text_backend="glove")
         assert batch.text.shape[-1] == GLOVE_DIM

@@ -20,9 +20,9 @@ from metrics import compute_sentiment_metrics, format_metrics, split_uniform_7  
 
 
 def _oracle_from_text(batch) -> np.ndarray:
-    """A cheap text-only baseline: scaled mean of the text stream."""
+    """Invert the text bias written by ``make_toy_batch`` (cue scale 0.90)."""
     text_score = batch.text.mean(axis=(1, 2))
-    pred = np.tanh(8.0 * 0.70 * text_score) * 3.0
+    pred = np.clip(text_score / 0.90 * 3.0, -3.0, 3.0)
     return pred.reshape(-1)
 
 
