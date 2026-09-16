@@ -1,0 +1,17 @@
+# Core training / inference stack used by model/*.py
+torch>=2.0
+numpy>=1.23
+scikit-learn>=1.2
+scipy>=1.10
+tqdm>=4.65
+memory-profiler>=0.61
+
+# Dataset construction (optional; only needed to rebuild pickles)
+# mmsdk
+# h5py
+# torchtext
+
+# Examples, result tables, and local tests
+pandas>=1.5
+matplotlib>=3.7
+pytest>=7.4
