@@ -89,8 +89,12 @@ hidden sizes:
 | LMF | GRU+Linear → 32 / 64 / 128 | LMF rank 32, out 128 |
 | TFN | GRU+Linear → 19 / 39 / 79 | MLP(64000) |
 | TransformerEarly | Identity | EarlyFusionTransformer(409) |
-| TransformerLate | TransformerSeq 64 / 128 / 512 | LateFusionTransformer(1792) |
+| TransformerLate | TransformerSeq 64 / 128 / 512 | LateFusionTransformer(1792)* |
 | GMTM | Identity | `GatedMultiTransfomerModel(3, [35,74,300])` |
+
+\* `1792` is what `train_main_glove.py` passes. The three `TransformerSeq`
+outputs actually concatenate to 704. See the sharp-edge note in
+[reproduction.md](reproduction.md).
 
 ## Ablation protocol
 

@@ -109,11 +109,14 @@ From `model/mosi_test/mosi_glove_results.csv`.
 | TransformerLate | 1.0855 | 0.2263 | 0.3097 | 0.7245 | 0.5303 | 0.7271 |
 | **GMTM** | **0.9748** | **0.3152** | **0.3995** | **0.7355** | **0.6177** | **0.7381** |
 
-## How to reprint the tables
+## How to reprint and plot the tables
 
 ```bash
 python examples/inspect_results.py
+python examples/plot_results.py
 ```
 
-The plotting notebook `model/results/plot.ipynb` concatenates the GMTM
-ablation's last row onto the main fusion-zoo tables before drawing bars.
+`plot_results.py` is the headless stand-in for `model/results/plot.ipynb`:
+it appends the last GMTM ablation row onto the six-fusion tables and
+writes PNGs under `examples/output/`. How to read the numbers:
+[interpreting_results.md](interpreting_results.md).

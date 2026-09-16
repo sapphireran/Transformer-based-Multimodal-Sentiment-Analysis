@@ -74,6 +74,13 @@ scores the **union** of MOSI train/valid/test.
   a module.
 * Acc-7 / Acc-5 in this repo are **uniform bins**, not the integer-label
   7-class scheme used in some older MOSI papers.
+* `train_main_glove.py` builds `TransformerSeq` widths 64+128+512 = 704
+  but constructs `LateFusionTransformer(in_dim=1792)` (BERT's 64+128+1024
+  is 1216 and does match). A GloVe Transformer-late **retrain** from
+  scratch will fail on that forward until `in_dim` is 704; the committed
+  GloVe CSV row was produced from a checkpoint that already existed.
+* Packed vs padded collate is easy to mix up. See
+  [batch_layout.md](batch_layout.md) and `examples/packed_vs_padded.py`.
 
 ## CPU smoke test (no dataset)
 
