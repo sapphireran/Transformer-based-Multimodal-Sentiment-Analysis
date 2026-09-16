@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store
+*.swp
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Local data, embeddings, and trained weights (too large for git)
+*.pkl
+*.pt
+*.pth
+*.hdf5
+*.csd
+*.bin
+*.npy
+*.npz
+
+# Keep placeholder files that already live in the tree
+!model/data/glove.840B.300d.txt
+
+# Local experiment dumps
+*.log
+wandb/
+runs/
