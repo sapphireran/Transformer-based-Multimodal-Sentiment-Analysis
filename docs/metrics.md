@@ -32,6 +32,10 @@ some earlier papers (those papers treat `±3, ±2, ±1, 0` as the labels
 directly). Keep that in mind when comparing to tables that say "Acc-7"
 without "uniform".
 
+`examples/bin_edges.py` prints every edge. `examples/metric_sensitivity.py`
+shifts otherwise-perfect predictions so you can see Acc-7 drop at a wall
+while MAE only grows by the shift.
+
 ## Binary sentiment
 
 `eval_affect`:

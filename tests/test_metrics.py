@@ -16,12 +16,14 @@ if str(MODEL_DIR) not in sys.path:
 
 from metrics import (  # noqa: E402
     as_numpy,
+    bin_intervals,
     compute_sentiment_metrics,
     eval_affect,
     format_metrics,
     split_uniform,
     split_uniform_5,
     split_uniform_7,
+    uniform_bin_edges,
 )
 
 
@@ -52,6 +54,18 @@ class TestUniformBins:
     def test_rejects_tiny_bin_count(self):
         with pytest.raises(ValueError):
             split_uniform([0.0], n_bins=1)
+
+    def test_uniform_bin_edges_length(self):
+        edges = uniform_bin_edges(7)
+        assert len(edges) == 8
+        assert edges[0] == pytest.approx(-3.0)
+        assert edges[-1] == pytest.approx(3.0)
+
+    def test_bin_intervals_are_contiguous(self):
+        intervals = bin_intervals(5)
+        assert [idx for idx, _left, _right in intervals] == [1, 2, 3, 4, 5]
+        for i in range(len(intervals) - 1):
+            assert intervals[i][2] == pytest.approx(intervals[i + 1][1])
 
 
 class TestEvalAffect:

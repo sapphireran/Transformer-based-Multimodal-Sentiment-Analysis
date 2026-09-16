@@ -51,13 +51,33 @@ def eval_affect(truths: ArrayLike, results: ArrayLike, exclude_zero: bool = True
     return f1, accuracy
 
 
-def split_uniform(data: ArrayLike, n_bins: int, low: float = -3.0, high: float = 3.0) -> np.ndarray:
-    """Map scores in ``[low, high]`` onto ``1 .. n_bins`` using equal-width bins."""
+def uniform_bin_edges(n_bins: int, low: float = -3.0, high: float = 3.0) -> np.ndarray:
+    """Return the ``n_bins + 1`` edges used by ``split_uniform``.
+
+    ``np.digitize(..., right=False)`` assigns ``x`` to bin ``i`` when
+    ``edges[i-1] <= x < edges[i]``, then the result is clipped to
+    ``1 .. n_bins``. The last bin therefore also absorbs ``x == high``
+    and anything larger.
+    """
     if n_bins < 2:
         raise ValueError(f"n_bins must be >= 2, got {n_bins}")
-    values = as_numpy(data)
     step = (high - low) / n_bins
-    edges = [low + i * step for i in range(n_bins + 1)]
+    return np.asarray([low + i * step for i in range(n_bins + 1)], dtype=np.float64)
+
+
+def bin_intervals(n_bins: int, low: float = -3.0, high: float = 3.0):
+    """List ``(index, left, right)`` triples for the uniform bins."""
+    edges = uniform_bin_edges(n_bins, low=low, high=high)
+    intervals = []
+    for i in range(n_bins):
+        intervals.append((i + 1, float(edges[i]), float(edges[i + 1])))
+    return intervals
+
+
+def split_uniform(data: ArrayLike, n_bins: int, low: float = -3.0, high: float = 3.0) -> np.ndarray:
+    """Map scores in ``[low, high]`` onto ``1 .. n_bins`` using equal-width bins."""
+    values = as_numpy(data)
+    edges = uniform_bin_edges(n_bins, low=low, high=high)
     categories = np.digitize(values, edges, right=False)
     return np.clip(categories, 1, n_bins)
 
@@ -138,10 +158,12 @@ def format_metrics(metrics: Mapping[str, float], precision: int = 4) -> str:
 
 __all__ = [
     "as_numpy",
+    "bin_intervals",
     "compute_sentiment_metrics",
     "eval_affect",
     "format_metrics",
     "split_uniform",
     "split_uniform_5",
     "split_uniform_7",
+    "uniform_bin_edges",
 ]
