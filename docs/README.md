@@ -17,3 +17,4 @@ that is actually in `model/`, not a cleaned-up rewrite.
 | [References](references.md) | Papers the modules follow |
 
 Runnable, dataset-free walkthroughs live in [`../examples/`](../examples/README.md).
+To reprint the checked-in CSVs without torch: `python examples/print_logged_results.py`.

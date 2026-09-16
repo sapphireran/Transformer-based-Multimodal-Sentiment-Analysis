@@ -79,10 +79,13 @@ class MetricTests(unittest.TestCase):
         self.assertAlmostEqual(acc, 1.0, places=6)
         self.assertGreater(f1, 0.0)
 
-    def test_constant_zero_acc2_is_not_one(self):
+    def test_constant_zero_is_all_negative(self):
         y = np.array([-2.0, -1.0, 1.0, 2.0])
-        _, acc = eval_affect(y, np.zeros_like(y), exclude_zero=True)
-        self.assertEqual(acc, 0.0)
+        f1, acc = eval_affect(y, np.zeros_like(y), exclude_zero=True)
+        # ŷ > 0 is false for 0.0, so two true negatives and two false
+        # negatives on this balanced slice.
+        self.assertAlmostEqual(acc, 0.5, places=6)
+        self.assertAlmostEqual(f1, 0.0, places=6)
 
 
 class FusionSmokeTests(unittest.TestCase):
@@ -103,6 +106,25 @@ class FusionSmokeTests(unittest.TestCase):
         params = {row["params"] for row in rows.values()}
         self.assertEqual(len(params), 1)
         self.assertTrue(all(row["ok"] for row in rows.values()))
+
+
+class LoggedResultsTests(unittest.TestCase):
+    def test_all_csvs_present_and_best_mae(self):
+        from print_logged_results import run
+
+        rows = run(verbose=False)
+        self.assertEqual(len(rows), 8)
+        self.assertTrue(all(r["ok"] for r in rows))
+        mosei_bert = next(r for r in rows if r["title"] == "MOSEI BERT fusion")
+        self.assertEqual(mosei_bert["best"], "TransformerLate")
+        self.assertEqual(mosei_bert["n"], 6)
+
+    def test_format_table_has_header_rule(self):
+        from print_logged_results import format_table
+
+        text = format_table([["Fusion", "MAE"], ["A", "0.2"], ["B", "0.1"]])
+        self.assertIn("Fusion", text)
+        self.assertIn("---", text)
 
 
 class ShapeTests(unittest.TestCase):

@@ -25,6 +25,7 @@ python examples/demo_fusion.py
 python examples/demo_gmtm.py
 python examples/demo_metrics.py
 python examples/demo_train_toy.py
+python examples/print_logged_results.py
 python examples/test_examples.py
 ```
 
@@ -41,7 +42,8 @@ GPU is optional. `common.device()` uses `cuda:0` when it exists.
 | `demo_gmtm.py` | Seven zero-masks, one GMTM graph. Parameter count must stay constant. |
 | `demo_metrics.py` | Bin edges, a few `(y, ŷ)` pairs, perfect / sign / zero / shuffled predictors. |
 | `demo_train_toy.py` | 8 AdamW + L1 steps on synthetic text-correlated labels. Train L1 must drop; test MAE must beat a constant-mean baseline. Writes `examples/output/toy_train_metrics.txt`. |
-| `test_examples.py` | Assertions for schema, binning, fusion smoke, GMTM masks. |
+| `print_logged_results.py` | Pretty-print every checked-in CSV and name the lowest-MAE row. |
+| `test_examples.py` | Assertions for schema, binning, fusion smoke, GMTM masks, CSV tables. |
 | `run_all.py` | All of the above in one process. |
 
 ## Design choices worth knowing

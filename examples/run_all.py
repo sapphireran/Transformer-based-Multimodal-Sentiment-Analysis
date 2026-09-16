@@ -31,8 +31,10 @@ def main() -> int:
     from demo_metrics import main as metrics_main
     from inspect_shapes import main as shapes_main
     from demo_train_toy import main as train_main
+    from print_logged_results import main as results_main
 
     status = 0
+    status |= _run("print_logged_results", results_main)
     status |= _run("inspect_shapes", shapes_main)
     status |= _run("demo_fusion", fusion_main)
     status |= _run("demo_gmtm", gmtm_main)

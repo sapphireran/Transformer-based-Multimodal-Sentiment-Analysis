@@ -33,8 +33,11 @@ over the test loader.
    threshold is applied to predictions.
 3. Report sklearn `accuracy_score` (Acc2) and binary `f1_score`.
 
-Neutral gold labels therefore never enter Acc2/F1. A model that dumps every
-clip at `0.0` would score 0 on both after the `> 0` test.
+Neutral gold labels therefore never enter Acc2/F1. A constant-`0.0`
+predictor is treated as **all negative** (`0 > 0` is false). Acc2 then
+equals the fraction of *non-zero* gold labels that are negative; the
+positive-class F1 is 0. On a balanced non-zero slice that is Acc2 = 0.5,
+not 0. `examples/demo_metrics.py` prints this case.
 
 ## Fine-grained accuracy (Acc5, Acc7)
 

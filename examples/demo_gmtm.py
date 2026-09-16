@@ -46,7 +46,7 @@ COMBINATIONS: List[Sequence[str]] = [
 ]
 
 
-def build_gmtm(text_dim: int = TEXT_GLOVE_DIM, dev: torch.device | None = None):
+def build_gmtm(text_dim: int = TEXT_GLOVE_DIM, dev: Optional[torch.device] = None):
     dev = dev or device()
     model = M.GatedMultiTransfomerModel(
         n_modalities=3,

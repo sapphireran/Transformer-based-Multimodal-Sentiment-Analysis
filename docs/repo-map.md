@@ -31,7 +31,7 @@ root.
 
 Tidier copies of the CSVs plus `plot.ipynb` (large, embedded figures from
 the original plotting session). Prefer the CSVs; the notebook is an
-artifact, not a source of truth.
+artifact, not a source of truth. Index: [`model/results/README.md`](../model/results/README.md).
 
 ## `model/data/`
 
@@ -91,6 +91,7 @@ GMTM names use `'+'.join(modalities)`, e.g. `model_text+audio+visual.pt`.
 | `demo_metrics.py` | Walk the binning rules on toy scores |
 | `demo_train_toy.py` | Few-step L1 train on synthetic data |
 | `inspect_shapes.py` | Print shapes through the BERT-sized stack |
+| `print_logged_results.py` | Pretty-print every checked-in results CSV |
 | `run_all.py` | Run every demo and the unit checks |
 | `test_examples.py` | Assertions used by `run_all` |
 
