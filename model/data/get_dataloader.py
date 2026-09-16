@@ -10,7 +10,10 @@ from torch.nn import functional as F
 sys.path.append(os.getcwd())
 
 import torch
-import torchtext as text
+try:
+    import torchtext as text  # optional; unused by the loaders below
+except ImportError:  # pragma: no cover - only needed for local GloVe rebuilds
+    text = None
 from collections import defaultdict
 from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import DataLoader, Dataset
