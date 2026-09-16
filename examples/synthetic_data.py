@@ -31,8 +31,12 @@ class SyntheticBatch:
 
 
 def _text_driven_labels(text: torch.Tensor) -> torch.Tensor:
-    """Map mean text activation into (-3, 3) so a toy model has a signal."""
-    scores = text.mean(dim=(1, 2))
+    """Map a few text channels into (-3, 3) so a toy model has a visible signal.
+
+    A full-tensor mean of ``randn`` is ~0; using the first step / first 8
+    dims keeps the target in the same numeric range as MOSI/MOSEI scores.
+    """
+    scores = text[:, 0, :8].mean(dim=1) * 2.5
     scores = 3.0 * torch.tanh(scores)
     return scores.unsqueeze(1)
 

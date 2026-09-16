@@ -11,13 +11,16 @@ def table(seq_len: int = 8, dim: int = 16) -> torch.Tensor:
     from models import SinusoidalPositionalEmbedding
 
     emb = SinusoidalPositionalEmbedding(dim)
-    dummy = torch.arange(1, seq_len + 1, device=cpu_device()).unsqueeze(0)
+    # GMTM feeds the first feature channel (float), not integer token ids.
+    # ``make_positions`` then masked-scatters into that tensor; a Long dummy
+    # breaks on current PyTorch (Long vs Float).
+    dummy = torch.arange(1, seq_len + 1, device=cpu_device(), dtype=torch.float).unsqueeze(0)
     return emb(dummy)  # [1, T, dim], detached
 
 
 def main() -> int:
     pos = table()
-    print("SinusoidalPositionalEmbedding (padding_idx=0, detached)")
+    print("SinusoidalPositionalEmbedding (float dummy channel, detached)")
     print_kv(
         [
             ("shape", tuple(pos.shape)),
