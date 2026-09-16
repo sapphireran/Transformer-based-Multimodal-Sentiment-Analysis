@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+
+# Notebooks / editors
+.ipynb_checkpoints/
+.DS_Store
+.idea/
+.vscode/
+
+# Local experiment artifacts (not the checked-in CSV summaries)
+*.pt
+*.pkl
+*.hdf5
+*.csd
+glove.840B.300d.txt
+
+# Example run leftovers
+examples/_outputs/
