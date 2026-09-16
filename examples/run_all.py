@@ -11,8 +11,13 @@ EXAMPLES = Path(__file__).resolve().parent
 
 STEPS = (
     ("inspect committed CSVs", [sys.executable, str(EXAMPLES / "inspect_results.py"), "--only", "MOSEI BERT"]),
+    ("plot committed CSVs", [sys.executable, str(EXAMPLES / "plot_results.py")]),
+    ("uniform bin edges", [sys.executable, str(EXAMPLES / "bin_edges.py"), "--write-json"]),
     ("score toy labels", [sys.executable, str(EXAMPLES / "evaluate_toy.py"), "--write-json"]),
+    ("metric sensitivity", [sys.executable, str(EXAMPLES / "metric_sensitivity.py"), "--write-json"]),
+    ("packed vs padded collate", [sys.executable, str(EXAMPLES / "packed_vs_padded.py"), "--write-json"]),
     ("fusion zoo forward", [sys.executable, str(EXAMPLES / "fusion_zoo.py"), "--write-json"]),
+    ("parameter counts (GloVe)", [sys.executable, str(EXAMPLES / "count_params.py"), "--backend", "glove", "--write-json"]),
     ("GMTM forward", [sys.executable, str(EXAMPLES / "gmtm_forward.py"), "--write-json"]),
     (
         "GMTM toy train",
@@ -23,6 +28,18 @@ STEPS = (
             "6",
             "--n-train",
             "96",
+            "--write-json",
+        ],
+    ),
+    (
+        "MLP vs GMTM on toy data",
+        [
+            sys.executable,
+            str(EXAMPLES / "compare_toy_fusions.py"),
+            "--epochs",
+            "4",
+            "--n-train",
+            "64",
             "--write-json",
         ],
     ),

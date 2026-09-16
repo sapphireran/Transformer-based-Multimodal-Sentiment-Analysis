@@ -181,3 +181,56 @@ class TestFusionAndGMTM:
             "F1",
         }
         assert scores["MAE"] >= 0.0
+
+
+class TestPlotAndCollate:
+    def test_with_gmtm_appends_renamed_row(self):
+        from plot_results import metric_value, with_gmtm
+
+        fusion = load_table(MODEL_DIR / "main_results.csv")
+        ablation = load_table(MODEL_DIR / "ablation_results.csv")
+        merged = with_gmtm(fusion, ablation)
+        assert len(merged) == len(fusion) + 1
+        assert merged[-1]["Fusion Method"] == "GatedMultiTransformer"
+        assert metric_value(merged[-1], "MAE") == pytest.approx(0.5640)
+
+    def test_plot_results_writes_pngs(self, tmp_path):
+        from plot_results import plot_fusion_and_ablation
+
+        paths = plot_fusion_and_ablation(tmp_path)
+        assert len(paths) == 3
+        for path in paths:
+            assert path.exists()
+            assert path.stat().st_size > 1000
+
+    def test_packed_t_max_matches_longest_clip(self):
+        from packed_vs_padded import collate_packed, make_variable_clips
+
+        clips = make_variable_clips(batch_size=6, max_len=10, seed=3)
+        packed, lengths, labels = collate_packed(clips)
+        raw = [clip["length"] for clip in clips]
+        assert packed[0].shape[0] == 6
+        assert packed[0].shape[1] == max(raw)
+        assert lengths[0].tolist() == raw
+        assert labels.shape[0] == 6
+
+    def test_padded_is_fixed_t(self):
+        from packed_vs_padded import collate_padded, make_variable_clips
+
+        clips = make_variable_clips(batch_size=4, max_len=9, seed=1)
+        cubes, labels = collate_padded(clips, max_len=9)
+        assert cubes[0].shape == (4, 9, VISION_DIM)
+        assert cubes[1].shape == (4, 9, AUDIO_DIM)
+        assert cubes[2].shape == (4, 9, GLOVE_DIM)
+        assert labels.shape[0] == 4
+
+
+class TestCountParams:
+    def test_tiny_gmtm_is_smaller_than_paper(self):
+        from count_params import describe_zoo
+
+        rows = {row["name"]: row["parameters"] for row in describe_zoo(GLOVE_DIM)}
+        assert rows["GMTM TinyHParams"] < rows["GMTM paper HParams"]
+        assert rows["GMTM TinyHParams"] > 0
+        assert rows["TensorFusion+head"] > 1_000_000
+

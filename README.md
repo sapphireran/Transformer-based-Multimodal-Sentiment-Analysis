@@ -51,8 +51,10 @@ python examples/run_all.py
 ```
 
 `examples/` rebuilds `[B, T, 35/74/768|300]` batches in memory, runs every
-fusion module, fits a tiny GMTM with AdamW + L1, and reprints the committed
-CSVs. See [examples/README.md](examples/README.md).
+fusion module, fits a tiny GMTM with AdamW + L1, reprints the committed
+CSVs, and writes BERT vs GloVe charts. See
+[examples/README.md](examples/README.md). Longer notes:
+[docs/README.md](docs/README.md).
 
 ## Train on MOSEI (needs pickles + GPU)
 
