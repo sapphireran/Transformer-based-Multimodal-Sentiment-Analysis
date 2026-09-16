@@ -1,0 +1,17 @@
+# Core training stack used by model/*.py
+torch>=2.0
+numpy>=1.23
+scikit-learn>=1.2
+scipy>=1.10
+tqdm>=4.65
+matplotlib>=3.7
+h5py>=3.8
+memory-profiler>=0.61
+
+# Optional: only needed to rebuild CMU-MOSI / CMU-MOSEI from MMSDK .csd files
+# mmsdk
+# torchtext
+
+# Examples and tests
+pytest>=7.4
+pandas>=2.0

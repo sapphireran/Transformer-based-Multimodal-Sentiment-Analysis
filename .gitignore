@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Local datasets and embeddings (too large for git)
+*.pkl
+*.csd
+*.hdf5
+*.h5
+glove.840B.300d.txt
+model/data/MOSEI/cmumosei/
+model/data/MOSI/cmumosi/
+
+# Trained weights
+*.pt
+*.pth
+model/checkpoints/**/*.pt
+model/checkpoints/ablation/*.pt
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Example / test artifacts
+examples/_output/
+tests/_output/
