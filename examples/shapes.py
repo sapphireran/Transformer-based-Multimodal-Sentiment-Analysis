@@ -16,7 +16,7 @@ class FeatureSpec:
 
     visual: int = 35
     audio: int = 74
-    text: int
+    text: int = 768
     time: int = 50
 
     @property

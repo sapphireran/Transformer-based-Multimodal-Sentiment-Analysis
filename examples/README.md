@@ -13,6 +13,7 @@ python examples/run_fusion_demo.py
 python examples/run_gmtm_demo.py
 python examples/run_metrics_demo.py
 python examples/run_tiny_train.py
+python -m unittest examples.test_metrics
 ```
 
 `python -m examples.run_fusion_demo` works too. Each script puts the

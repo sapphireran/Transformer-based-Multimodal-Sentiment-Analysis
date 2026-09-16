@@ -23,7 +23,7 @@ DEMOS = (
 def main() -> int:
     for rel in DEMOS:
         path = ROOT / rel
-        print(f"\n######## {rel} ########\n")
+        print(f"\n######## {rel} ########\n", flush=True)
         result = subprocess.run([sys.executable, str(path)], cwd=ROOT)
         if result.returncode != 0:
             print(f"\n{rel} failed with exit {result.returncode}")
