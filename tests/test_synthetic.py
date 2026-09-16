@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import pytest
 import torch
 
 from msa_lab.synthetic import FEATURE_DIMS, make_sentiment_batch, zero_modalities
@@ -24,10 +25,10 @@ def test_named_packs_match_feature_table():
 
 def test_forced_label_anchors():
     batch = make_sentiment_batch(batch_size=4, seq_len=4, preset="toy", seed=99)
-    assert float(batch.labels[0]) == 2.4
-    assert float(batch.labels[1]) == -1.8
-    assert float(batch.labels[2]) == 0.0
-    assert float(batch.labels[3]) == 0.7
+    assert float(batch.labels[0]) == pytest.approx(2.4)
+    assert float(batch.labels[1]) == pytest.approx(-1.8)
+    assert float(batch.labels[2]) == pytest.approx(0.0)
+    assert float(batch.labels[3]) == pytest.approx(0.7)
 
 
 def test_variable_lengths_zero_tail():
