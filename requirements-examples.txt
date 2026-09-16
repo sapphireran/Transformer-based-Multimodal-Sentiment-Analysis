@@ -1,0 +1,13 @@
+# Lighter stack for the CPU-only examples/ and docs checks.
+# Install after (or instead of) the full training requirements:
+#
+#   pip install -r requirements-examples.txt
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+#
+numpy>=1.23
+scikit-learn>=1.2
+scipy>=1.10
+matplotlib>=3.7
+pyyaml>=6.0
+tqdm>=4.65
+pytest>=7.4

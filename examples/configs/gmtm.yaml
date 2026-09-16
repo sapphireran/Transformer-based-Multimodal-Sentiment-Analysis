@@ -1,0 +1,68 @@
+# Mirror of the HParams class in train_GMTM_bert.py / train_GMTM_glove.py
+
+name: gmtm
+class_name: GatedMultiTransfomerModel
+n_modalities: 3
+
+data:
+  batch_size: 32
+  max_seq_len: 50
+  max_pad: true
+  is_packed: false
+
+feature_dims:
+  bert: [35, 74, 768]
+  glove: [35, 74, 300]
+
+optim:
+  name: AdamW
+  lr: 1.0e-4
+  weight_decay: 0.01
+  objective: L1Loss
+  early_stop: true
+  epochs_commented:
+    bert: 50
+    glove: 20
+
+hparams:
+  num_heads: 4
+  layers: 4
+  attn_dropout: 0.1
+  attn_dropout_modalities: [0.0, 0.0, 0.1]
+  relu_dropout: 0.1
+  res_dropout: 0.1
+  out_dropout: 0.1
+  embed_dropout: 0.2
+  embed_dim: 64
+  attn_mask: true
+  output_dim: 1
+  all_steps: false
+  # stored on the HParams object but not read by GatedMultiTransfomerModel.forward
+  unused_by_forward:
+    modality_dropout: 0.2
+    use_text_transformer: true
+
+default_hparams_if_omitted:
+  embed_dim: 9
+  num_heads: 3
+  layers: 3
+  embed_dropout: 0.25
+  out_dropout: 0.0
+  note: "Legal (9 % 3 == 0). Used by examples/run_gmtm_toy.py for a cheap CPU pass."
+
+ablation_subsets:
+  - [text]
+  - [audio]
+  - [visual]
+  - [text, audio]
+  - [text, visual]
+  - [audio, visual]
+  - [text, audio, visual]
+
+ablation_protocol: zero_unused_modalities
+checkpoint_templates:
+  bert: model/checkpoints/ablation/model_{modalities_joined}.pt
+  glove: model/checkpoints/ablation/model_glove_{modalities_joined}.pt
+results_csv:
+  bert: model/results/ablation_results.csv
+  glove: model/results/ablation_glove_results.csv

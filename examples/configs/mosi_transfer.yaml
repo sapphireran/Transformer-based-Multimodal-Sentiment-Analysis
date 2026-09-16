@@ -1,0 +1,47 @@
+# MOSI is evaluation-only in this repo. Scripts live under model/mosi_test/.
+
+name: mosi_transfer
+dataset: mosi
+role: test_only
+note: >
+  get_mosi_dataloader concatenates MOSI train+valid+test into one loader.
+  Acc-2 / F1 still drop true zeros. Do not compare these MAE numbers to a
+  paper that reports the official MOSI test split only.
+
+pickles:
+  bert: model/data/MOSI/mosi_raw_bert.pkl
+  glove: model/data/MOSI/mosi_raw_glove.pkl
+
+feature_dims:
+  visual: 35
+  audio: 74
+  bert_text: 768
+  glove_text: 300
+
+loaders:
+  packed: "get_mosi_dataloader(..., max_pad=False)"
+  max_pad: "get_mosi_dataloader(..., max_pad=True)"
+  ablation: "get_ablation_mosi_dataloader(..., modalities=..., embedding=bert|glove)"
+
+checkpoints_loaded:
+  bert_fusion: model/checkpoints/{FusionMethod}.pt
+  glove_fusion: model/checkpoints/glove_{FusionMethod}.pt
+  bert_gmtm: model/checkpoints/ablation/model_{modalities}.pt
+  glove_gmtm: model/checkpoints/ablation/model_glove_{modalities}.pt
+
+scripts:
+  - model/mosi_test/train_mosi_bert.py
+  - model/mosi_test/train_mosi_glove.py
+  - model/mosi_test/mult_bert_mosi.py
+  - model/mosi_test/mult_glove_mosi.py
+
+known_import_trap: >
+  train_mosi_glove.py still imports MultiBench
+  training_structures.Supervised_Learning. Switch it to train_and_test.test
+  (as train_mosi_bert.py already does) if you do not have MultiBench installed.
+
+results_csv:
+  bert_fusion: model/mosi_test/mosi_bert_results.csv
+  glove_fusion: model/mosi_test/mosi_glove_results.csv
+  bert_ablation: model/mosi_test/ablation_mosi_results.csv
+  glove_ablation: model/mosi_test/ablation_mosi_glove_results.csv

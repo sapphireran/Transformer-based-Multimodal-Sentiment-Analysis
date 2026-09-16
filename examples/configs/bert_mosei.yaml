@@ -1,0 +1,89 @@
+# Mirror of model/train_main_bert.py — not read by that script.
+# Kept here so the encoder widths and train() knobs are citable.
+
+name: bert_mosei_fusion_sweep
+dataset: mosei
+embedding: bert
+pickle: model/data/MOSEI/mosei_raw_bert.pkl
+
+data:
+  batch_size: 32
+  max_seq_len: 50
+  num_workers: 0
+  z_norm: false
+  robust_test: false
+  feature_dims:
+    visual: 35
+    audio: 74
+    text: 768
+
+optim:
+  name: AdamW
+  lr: 1.0e-4
+  weight_decay: 0.01
+  objective: L1Loss
+  early_stop: true
+  patience: 7
+  grad_clip: 8.0
+  # train_main_bert.py currently passes 1; a real rerun should use ~20
+  epochs_in_script: 1
+  epochs_recommended: 20
+
+packed_methods:
+  - ConcatEarly
+  - ConcatLate
+  - LowRankTensorFusion
+  - TensorFusion
+  - TransformerLate
+
+max_pad_methods:
+  - TransformerEarly
+
+fusion:
+  ConcatEarly:
+    encoders: [Identity, Identity, Identity]
+    fusion: ConcatEarly
+    head: "LSTM(877, 1024, dropout) + MLP(1024, 1024, 1)"
+    concat_width: 877
+  ConcatLate:
+    encoders:
+      - "LSTM(35, 64, dropout, packed)"
+      - "LSTM(74, 256, dropout, packed)"
+      - "LSTM(768, 1024, dropout, packed)"
+    fusion: ConcatLate
+    head: "MLP(1344, 1344, 1)"
+    concat_width: 1344
+  LowRankTensorFusion:
+    encoders:
+      - "GRUWithLinear(35, 64, 32, packed)"
+      - "GRUWithLinear(74, 256, 64, packed)"
+      - "GRUWithLinear(768, 1024, 256, packed)"
+    fusion: "LowRankTensorFusion([32, 64, 256], 256, rank=32)"
+    head: "MLP(256, 256, 1)"
+  TensorFusion:
+    encoders:
+      - "GRUWithLinear(35, 64, 19, packed)"
+      - "GRUWithLinear(74, 256, 39, packed)"
+      - "GRUWithLinear(768, 1024, 159, packed)"
+    fusion: TensorFusion
+    head: "MLP(128000, 2048, 1)"
+    fused_width: 128000
+  TransformerEarly:
+    encoders: [Identity, Identity, Identity]
+    fusion: "EarlyFusionTransformer(n_features=877)"
+    head: "MLP(64, 64, 1)"
+    transformer:
+      layers: 4
+      nhead: 4
+      embed_dim: 32
+  TransformerLate:
+    encoders:
+      - "TransformerSeq(35, 64)"
+      - "TransformerSeq(74, 128)"
+      - "TransformerSeq(768, 1024)"
+    fusion: "LateFusionTransformer(in_dim=1216)"
+    head: "MLP(32, 32, 1)"
+    concat_width: 1216
+
+checkpoint_template: model/checkpoints/{fusion}.pt
+results_csv: model/results/main_results.csv
