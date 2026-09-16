@@ -1,0 +1,30 @@
+# Personal lab artifacts — do not commit features or weights
+# See docs/setup.md and model/data/readme.md
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Features and SDK dumps
+*.pkl
+*.csd
+*.hdf5
+*.h5
+model/data/glove.840B.300d.txt
+model/data/**/cmumosei/
+model/data/**/cmumosi/
+
+# Full-module checkpoints from torch.save(model, ...)
+model/checkpoints/**/*.pt
+model/checkpoints/**/*.pth
+
+# Local plots / confusion matrices from single_test
+*.png
+*.pdf
+.cache/
