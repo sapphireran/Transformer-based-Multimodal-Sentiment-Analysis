@@ -1,0 +1,82 @@
+# Mirror of model/train_main_glove.py
+
+name: glove_mosei_fusion_sweep
+dataset: mosei
+embedding: glove
+pickle: model/data/MOSEI/mosei_raw_glove.pkl
+
+data:
+  batch_size: 32
+  max_seq_len: 50
+  num_workers: 0
+  z_norm: false
+  feature_dims:
+    visual: 35
+    audio: 74
+    text: 300
+
+optim:
+  name: AdamW
+  lr: 1.0e-4
+  weight_decay: 0.01
+  objective: L1Loss
+  early_stop: true
+  patience: 7
+  grad_clip: 8.0
+  epochs_commented_in_script: 10
+
+packed_methods:
+  - ConcatEarly
+  - ConcatLate
+  - LowRankTensorFusion
+  - TensorFusion
+  - TransformerLate
+
+max_pad_methods:
+  - TransformerEarly
+
+fusion:
+  ConcatEarly:
+    encoders: [Identity, Identity, Identity]
+    fusion: ConcatEarly
+    head: "LSTM(409, 512, dropout) + MLP(512, 512, 1)"
+    concat_width: 409
+  ConcatLate:
+    encoders:
+      - "LSTM(35, 64, dropout, packed)"
+      - "LSTM(74, 256, dropout, packed)"
+      - "LSTM(300, 512, dropout, packed)"
+    fusion: ConcatLate
+    head: "MLP(832, 832, 1)"
+    concat_width: 832
+  LowRankTensorFusion:
+    encoders:
+      - "GRUWithLinear(35, 64, 32, packed)"
+      - "GRUWithLinear(74, 256, 64, packed)"
+      - "GRUWithLinear(300, 512, 128, packed)"
+    fusion: "LowRankTensorFusion([32, 64, 128], 128, rank=32)"
+    head: "MLP(128, 128, 1)"
+  TensorFusion:
+    encoders:
+      - "GRUWithLinear(35, 64, 19, packed)"
+      - "GRUWithLinear(74, 256, 39, packed)"
+      - "GRUWithLinear(300, 512, 79, packed)"
+    fusion: TensorFusion
+    head: "MLP(64000, 2048, 1)"
+    fused_width: 64000
+  TransformerEarly:
+    encoders: [Identity, Identity, Identity]
+    fusion: "EarlyFusionTransformer(n_features=409)"
+    head: Identity
+    note: "Unlike the BERT script, GloVe early-fusion uses Identity as the MultiFramework head."
+  TransformerLate:
+    encoders:
+      - "TransformerSeq(35, 64)"
+      - "TransformerSeq(74, 128)"
+      - "TransformerSeq(300, 512)"
+    fusion: "LateFusionTransformer(in_dim=1792)"
+    head: "MLP(32, 32, 1)"
+    note: "64+128+512=704. If a fresh run errors in Conv1d, set in_dim to the real concat width."
+
+checkpoint_template: model/checkpoints/glove_{fusion}.pt
+results_csv: model/results/glove_results.csv
