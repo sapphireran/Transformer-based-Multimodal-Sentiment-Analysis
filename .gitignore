@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Local experiment artifacts (do not commit trained weights or raw pickles)
+*.pt
+*.pth
+*.pkl
+*.hdf5
+*.h5
+*.csd
+
+# Keep the empty GloVe placeholder tracked if already in the tree
+!model/data/glove.840B.300d.txt
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Example outputs
+examples/output/
+docs/_generated/
