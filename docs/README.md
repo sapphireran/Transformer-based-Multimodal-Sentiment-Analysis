@@ -15,7 +15,8 @@ Read in this order if you are new to the repo:
 7. [Results](results.md) — numbers copied from `model/results/*.csv`
 8. [Ablation](ablation.md) — leave-one-modality-out interpretation
 9. [Reproduction](reproduction.md) — how to rerun, what is missing from git
-10. [Glossary](glossary.md) — short definitions
+10. [Script reference](script_reference.md)
+11. [Glossary](glossary.md) — short definitions
 
 Runnable CPU toys that do **not** need the CMU pickles:
 

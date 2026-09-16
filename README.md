@@ -126,6 +126,7 @@ Metric definitions and pitfalls are in
 - [Reproduction notes](docs/reproduction.md)
 - [Glossary](docs/glossary.md)
 - [Repository map](docs/repo_map.md)
+- [Script reference](docs/script_reference.md)
 
 ## License
 

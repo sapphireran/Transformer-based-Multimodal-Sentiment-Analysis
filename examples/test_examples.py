@@ -59,6 +59,9 @@ class SyntheticDataTests(unittest.TestCase):
         corpus = make_corpus(n=16, text="bert", seed=15)
         self.assertGreaterEqual(corpus.labels.min().item(), -3.0)
         self.assertLessEqual(corpus.labels.max().item(), 3.0)
+        # Latent sentiment is drawn on [-2.6, 2.6]; a batch of 16 should
+        # not collapse near zero the way a raw feature-mean used to.
+        self.assertGreater(corpus.labels.max().item() - corpus.labels.min().item(), 1.5)
 
 
 class MetricsTests(unittest.TestCase):

@@ -90,20 +90,23 @@ def make_corpus(
     lengths = torch.randint(min_len, max_len + 1, (n,), generator=g)
     vision, audio, text_seqs = [], [], []
     raw_scores = []
+    # One random direction in text space so labels actually use [-3, 3]
+    # instead of collapsing near 0 (the mean of a long randn vector is tiny).
+    text_dir = torch.randn(ft, generator=g)
+    text_dir = text_dir / text_dir.norm().clamp_min(1e-6)
     for length in lengths.tolist():
         v = torch.randn(length, fv, generator=g)
         a = torch.randn(length, fa, generator=g)
         t = torch.randn(length, ft, generator=g)
-        # Plant a detectable signal in the text stream.
-        score = t.mean() * 4.0
-        t = t + 0.15 * score
+        latent = torch.empty(1).uniform_(-2.6, 2.6, generator=g).item()
+        t = t + latent * text_dir
         vision.append(v.to(dev))
         audio.append(a.to(dev))
         text_seqs.append(t.to(dev))
-        raw_scores.append(score)
+        raw_scores.append(latent)
 
-    labels = torch.stack(raw_scores).to(dev).unsqueeze(1)
-    labels = labels + 0.25 * torch.randn(n, 1, generator=g).to(dev)
+    labels = torch.tensor(raw_scores, device=dev).unsqueeze(1)
+    labels = labels + 0.15 * torch.randn(n, 1, generator=g).to(dev)
     labels = labels.clamp(-3.0, 3.0)
     return SyntheticCorpus(
         vision=vision,
