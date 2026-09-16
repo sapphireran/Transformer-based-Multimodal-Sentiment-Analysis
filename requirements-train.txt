@@ -1,0 +1,8 @@
+# Extra packages used by model/train_*.py and the raw-feature notebooks.
+# Install on top of requirements.txt when you have the MOSI/MOSEI pickles.
+-r requirements.txt
+memory-profiler>=0.61
+h5py>=3.8
+torchtext>=0.16
+# Official CMU-MultimodalSDK (feature download / word alignment):
+#   pip install git+https://github.com/CMU-MultiComp-Lab/CMU-MultimodalSDK.git

@@ -1,0 +1,22 @@
+# Local MOSI / MOSEI artifacts (not redistributed)
+*.pkl
+*.csd
+*.hdf5
+*.pt
+model/data/glove.840B.300d.txt
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Notebook / editor
+.ipynb_checkpoints/
+.idea/
+.vscode/
+
+# Matplotlib / OS
+.DS_Store
+*.png
