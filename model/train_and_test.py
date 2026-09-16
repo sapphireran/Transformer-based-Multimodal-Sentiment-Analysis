@@ -8,30 +8,11 @@ from tqdm import tqdm
 import numpy as np
 #import pdb
 from scipy.stats import pearsonr
+try:
+    from metrics import eval_affect, split_uniform_5, split_uniform_7
+except ImportError:  # repo-root imports (examples/, tests/)
+    from model.metrics import eval_affect, split_uniform_5, split_uniform_7
 softmax = nn.Softmax()
-
-
-
-def eval_affect(truths, results, exclude_zero=True):
-    if type(results) is np.ndarray:
-        test_preds = results
-        test_truth = truths
-    else:
-        test_preds = results.cpu().numpy()
-        test_truth = truths.cpu().numpy()
-
-    non_zeros = np.array([i for i, e in enumerate(
-        test_truth) if e != 0 or (not exclude_zero)])
-
-    binary_truth = (test_truth[non_zeros] > 0)
-    binary_preds = (test_preds[non_zeros] > 0)
-
-    # 计算 F1 分数
-    f1 = f1_score(binary_truth, binary_preds, average='binary')
-    # 计算准确率
-    accuracy = accuracy_score(binary_truth, binary_preds)
-
-    return f1, accuracy
 
 class MultiFramework(nn.Module):
     """Implements MMDL classifier."""
@@ -102,10 +83,6 @@ def deal_with_objective(objective, pred, truth, args):
         return objective(pred, truth, args)
 
 
-from memory_profiler import memory_usage
-import time
-
-
 def getallparams(li):
     params = 0
     for module in li:
@@ -115,6 +92,8 @@ def getallparams(li):
 
 
 def all_in_one_train(trainprocess, trainmodules):
+    from memory_profiler import memory_usage
+
     starttime = time.time()
     mem = max(memory_usage(proc=trainprocess))
     endtime = time.time()
@@ -247,32 +226,6 @@ def train(
         all_in_one_train(_trainprocess, [model] + additional_optimizing_modules)
     else:
         _trainprocess()
-
-def split_uniform_7(data):
-    """
-    将 [-3, 3] 等分成 7 段，返回每个元素对应的区间索引(1..7)。
-    """
-    # 计算步长
-    step = 6.0 / 7.0  # 6.0 = 3 - (-3)
-    # 定义边界 edges, 共有 7 段，需要 8 个边界
-    edges = [-3.0 + i*step for i in range(8)]  # i=0..7
-    # 利用 np.digitize，把 data 中的值映射到 1..7
-    # np.digitize: 给出 data 中每个值在 edges 中所处的位置(1-based)
-    categories = np.digitize(data, edges, right=False)
-    # 上面得到的类别范围 1..8，但超过 7 的部分说明 data==3.0 或更大，需要裁到 7
-    categories = np.clip(categories, 1, 7)
-    return categories
-
-def split_uniform_5(data):
-    """
-    将 [-3, 3] 等分成 5 段，返回每个元素对应的区间索引(1..5)。
-    """
-    step = 6.0 / 5.0
-    edges = [-3.0 + i*step for i in range(6)]  # i=0..5
-    categories = np.digitize(data, edges, right=False)
-    categories = np.clip(categories, 1, 5)
-    return categories
-
 
 def single_test(
         model, test_dataloader, is_packed=False,
