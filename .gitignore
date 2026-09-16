@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Notebooks and editor
+.ipynb_checkpoints/
+.idea/
+.vscode/
+.DS_Store
+*.swp
+
+# Experiment artifacts that are too large to version
+*.pkl
+*.pt
+*.pth
+*.csd
+*.hdf5
+*.h5
+
+# Keep small published CSVs; ignore ad-hoc dumps
+model/checkpoints/**/*.pt
+model/data/**/*.pkl
+model/data/**/*.csd
+model/data/**/*.hdf5
+
+# Example / local outputs
+examples/output/
+.pytest_cache/
+.coverage
+htmlcov/
