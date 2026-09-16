@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+.venv/
+venv/
+.env
+
+# Tests / tooling
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Local experiment artifacts (keep CSV tables, not weights)
+*.pt
+*.pth
+*.ckpt
+*.pkl
+!model/results/*.csv
+
+# Data that is downloaded separately
+model/data/**/*.csd
+model/data/**/*.hdf5
+model/data/glove.840B.300d.txt
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
