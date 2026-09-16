@@ -1,0 +1,17 @@
+# Core training / evaluation stack used by model/ scripts and examples/.
+# Install a CUDA build of torch when training on GPU; CPU wheels are enough
+# for the synthetic examples.
+
+torch>=2.1
+numpy>=1.24
+scikit-learn>=1.3
+scipy>=1.11
+tqdm>=4.66
+memory-profiler>=0.61
+matplotlib>=3.8
+
+# Optional: only needed when regenerating raw CMU-MOSI / CMU-MOSEI pickles
+# from Multimodal SDK computational sequences.
+# mmsdk
+# h5py
+# torchtext
