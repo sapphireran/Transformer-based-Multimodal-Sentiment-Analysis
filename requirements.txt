@@ -1,0 +1,16 @@
+# Personal research environment for MOSI / MOSEI transformer fusion.
+# The examples/ scripts only need torch, numpy, and scikit-learn.
+# The full training stack also uses the rest of this list.
+
+torch>=2.0
+numpy>=1.23
+scikit-learn>=1.2
+scipy>=1.10
+tqdm>=4.65
+matplotlib>=3.7
+memory-profiler>=0.61
+h5py>=3.8
+
+# Optional: rebuild features from CMU .csd files
+# git+https://github.com/A2Zadeh/CMU-MultimodalSDK.git
+# torchtext   # imported by model/data/get_dataloader.py but unused in the hot path
