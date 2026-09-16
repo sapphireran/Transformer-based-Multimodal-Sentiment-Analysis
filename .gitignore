@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Notebooks / OS
+.ipynb_checkpoints/
+.DS_Store
+Thumbs.db
+
+# Local experiment artifacts (weights and raw feature dumps are not committed)
+*.pt
+*.pth
+*.pkl
+*.hdf5
+*.h5
+*.csd
+
+# Keep documented result tables
+!model/**/*.csv
+
+# Editor
+.idea/
+.vscode/
+*.swp
