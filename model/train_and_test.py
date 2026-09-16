@@ -1,37 +1,16 @@
 
 """Implements supervised learning training procedures."""
-from sklearn.metrics import accuracy_score, f1_score
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 import torch
 from torch import nn
 import time
 from tqdm import tqdm
 import numpy as np
-#import pdb
-from scipy.stats import pearsonr
+from metrics import (
+    compute_sentiment_metrics,
+    split_uniform_7,
+)
 softmax = nn.Softmax()
-
-
-
-def eval_affect(truths, results, exclude_zero=True):
-    if type(results) is np.ndarray:
-        test_preds = results
-        test_truth = truths
-    else:
-        test_preds = results.cpu().numpy()
-        test_truth = truths.cpu().numpy()
-
-    non_zeros = np.array([i for i, e in enumerate(
-        test_truth) if e != 0 or (not exclude_zero)])
-
-    binary_truth = (test_truth[non_zeros] > 0)
-    binary_preds = (test_preds[non_zeros] > 0)
-
-    # 计算 F1 分数
-    f1 = f1_score(binary_truth, binary_preds, average='binary')
-    # 计算准确率
-    accuracy = accuracy_score(binary_truth, binary_preds)
-
-    return f1, accuracy
 
 class MultiFramework(nn.Module):
     """Implements MMDL classifier."""
@@ -248,35 +227,14 @@ def train(
     else:
         _trainprocess()
 
-def split_uniform_7(data):
-    """
-    将 [-3, 3] 等分成 7 段，返回每个元素对应的区间索引(1..7)。
-    """
-    # 计算步长
-    step = 6.0 / 7.0  # 6.0 = 3 - (-3)
-    # 定义边界 edges, 共有 7 段，需要 8 个边界
-    edges = [-3.0 + i*step for i in range(8)]  # i=0..7
-    # 利用 np.digitize，把 data 中的值映射到 1..7
-    # np.digitize: 给出 data 中每个值在 edges 中所处的位置(1-based)
-    categories = np.digitize(data, edges, right=False)
-    # 上面得到的类别范围 1..8，但超过 7 的部分说明 data==3.0 或更大，需要裁到 7
-    categories = np.clip(categories, 1, 7)
-    return categories
-
-def split_uniform_5(data):
-    """
-    将 [-3, 3] 等分成 5 段，返回每个元素对应的区间索引(1..5)。
-    """
-    step = 6.0 / 5.0
-    edges = [-3.0 + i*step for i in range(6)]  # i=0..5
-    categories = np.digitize(data, edges, right=False)
-    categories = np.clip(categories, 1, 5)
-    return categories
+# split_uniform_7 / split_uniform_5 / eval_affect live in metrics.py so
+# examples and tests can score predictions without importing this module.
 
 
 def single_test(
         model, test_dataloader, is_packed=False,
-        criterion=torch.nn.CrossEntropyLoss(), input_to_float=True):
+        criterion=torch.nn.CrossEntropyLoss(), input_to_float=True,
+        show_confusion=True):
     def _processinput(inp):
         return inp.float() if input_to_float else inp
 
@@ -326,55 +284,37 @@ def single_test(
         totals = true.shape[0]
         testloss = totalloss/totals
 
-        true_vals = true  #真实值
-
-
-        # 1) 计算回归指标: MSE, MAE, Corr
-        corr, _ = pearsonr(true_vals.squeeze(), pred_reg.squeeze())
-        mse = torch.mean((true_vals - pred_reg) ** 2).item()
-        mae = torch.mean(torch.abs(true_vals - pred_reg)).item()
-
-        # 2) 计算分类指标: Acc7 (均匀区间), Acc5 (均匀区间)
-        #    先把回归输出和真实值都映射到1..7 / 1..5
+        scores = compute_sentiment_metrics(true, pred_reg)
         pred_7 = split_uniform_7(pred_reg)
-        true_7 = split_uniform_7(true_vals)
-        Acc7 = accuracy_score(true_7, pred_7)
+        true_7 = split_uniform_7(true)
 
-        pred_5 = split_uniform_5(pred_reg)
-        true_5 = split_uniform_5(true_vals)
-        Acc5 = accuracy_score(true_5, pred_5)
+        if show_confusion:
+            import matplotlib.pyplot as plt
 
+            conf_matrix = confusion_matrix(pred_7, true_7)
+            disp = ConfusionMatrixDisplay(
+                confusion_matrix=conf_matrix, display_labels=np.unique(true_7)
+            )
+            disp.plot(cmap=plt.cm.Blues)
+            plt.title("Confusion Matrix")
+            plt.show()
 
-        F1, Acc2 = eval_affect(true_vals, pred_reg)
-
-        import numpy as np
-        import matplotlib.pyplot as plt
-        from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, classification_report
-
-        conf_matrix = confusion_matrix(pred_7, true_7)
-
-        disp = ConfusionMatrixDisplay(confusion_matrix=conf_matrix, display_labels=np.unique(true_7))
-        disp.plot(cmap=plt.cm.Blues)
-        plt.title("Confusion Matrix")
-        plt.show()
-
-        # 输出
         print(f"Test Loss: {testloss:.4f}")
-        print(f"MSE: {mse:.4f}, MAE: {mae:.4f}, Corr: {corr:.4f}")
-        print(f"Acc7 (uniform splits): {Acc7:.4f}")
-        print(f"Acc5 (uniform splits): {Acc5:.4f}")
-        print(f"Acc2: {Acc2:.4f}")
-        print(f"F1 score: {F1:.4f}")
+        print(f"MSE: {scores['MSE']:.4f}, MAE: {scores['MAE']:.4f}, Corr: {scores['Corr']:.4f}")
+        print(f"Acc7 (uniform splits): {scores['Acc7_uniform']:.4f}")
+        print(f"Acc5 (uniform splits): {scores['Acc5_uniform']:.4f}")
+        print(f"Acc2: {scores['Acc2']:.4f}")
+        print(f"F1 score: {scores['F1']:.4f}")
 
         return {
             'TestLoss': testloss,
-            'MSE': mse,
-            'MAE': mae,
-            'Corr': corr,
-            'Acc7_uniform': Acc7,
-            'Acc5_uniform': Acc5,
-            'Acc2': Acc2,
-            'F1': F1
+            'MSE': scores['MSE'],
+            'MAE': scores['MAE'],
+            'Corr': scores['Corr'],
+            'Acc7_uniform': scores['Acc7_uniform'],
+            'Acc5_uniform': scores['Acc5_uniform'],
+            'Acc2': scores['Acc2'],
+            'F1': scores['F1'],
         }
 
 
