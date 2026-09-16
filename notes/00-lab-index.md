@@ -20,6 +20,7 @@ the usual leaderboard without a re-score.
 | [06](06-hyperparams-and-training-protocol.md) | both | both | Optimizer, epochs, packing | train_*.py |
 | [07](07-failure-modes-and-open-questions.md) | — | — | Bugs, dead knobs, next runs | — |
 | [08](08-reading-list-and-personal-context.md) | — | — | What I was reading, what I am not doing | — |
+| [09](09-numeric-appendix.md) | both | both | All CSV floats in one grep-able page | every `*.csv` |
 
 ## Working conclusions I still believe
 

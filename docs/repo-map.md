@@ -10,7 +10,8 @@ later and not have to re-derive the wiring from `import` statements.
 | `README.md` | Project brief + headline tables |
 | `LICENSE` | MIT, copyright 2024 pang990801 |
 | `docs/` | Durable explanations (architecture, metrics, data, setup) |
-| `notes/` | Dated-style lab notes. Opinions belong here, not in the training scripts |
+| `notes/` | Lab notes `00`–`09`. Opinions belong here, not in the training scripts |
+| `docs/next-sweep.md` | Playbook for the next GPU sitting (leftover test, GloVe trio, MOSI split) |
 | `model/` | All runnable experiment code |
 
 There is no `requirements.txt` in the original tree. The import set I actually used is

@@ -103,7 +103,9 @@ Caveats I keep repeating to myself:
 | [`docs/metrics.md`](docs/metrics.md) | How Acc-7 / Acc-5 / Acc-2 / F1 / MAE / Corr are computed |
 | [`docs/data-pipeline.md`](docs/data-pipeline.md) | Pickle layout, padding modes, ablation zeroing |
 | [`docs/setup.md`](docs/setup.md) | Local env, expected files, what is *not* in git |
+| [`docs/next-sweep.md`](docs/next-sweep.md) | The four experiments I will run next, and the housekeeping I will do first |
 | [`notes/00-lab-index.md`](notes/00-lab-index.md) | Index of every experiment note |
+| [`notes/09-numeric-appendix.md`](notes/09-numeric-appendix.md) | Every logged CSV float in one page |
 
 ## License
 
