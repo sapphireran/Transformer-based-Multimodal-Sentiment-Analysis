@@ -1,0 +1,16 @@
+# Core training / inference stack used by the scripts under model/
+torch>=2.0
+numpy>=1.24
+scikit-learn>=1.3
+scipy>=1.10
+tqdm>=4.65
+
+# Optional extras used by the original training loop and notebooks
+matplotlib>=3.7
+memory-profiler>=0.61
+h5py>=3.8
+
+# Dataset construction from CMU-SDK computational sequences (optional)
+# mmsdk is installed from the CMU Multimodal SDK, not PyPI:
+#   git clone https://github.com/CMU-MultiCOMP-Lab/MMCore.git
+#   pip install -e MMCore
