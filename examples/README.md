@@ -12,6 +12,7 @@ python examples/02_fusion_forward.py
 python examples/03_gmtm_forward.py
 python examples/04_metrics_walkthrough.py
 python examples/05_mini_training.py
+python examples/06_result_tables.py
 ```
 
 Run them from **either** the repo root or `examples/`. `common.py` puts
@@ -24,6 +25,7 @@ Run them from **either** the repo root or `examples/`. `common.py` puts
 | `03_gmtm_forward.py` | Tiny GMTM (2 layers, embed 16) + param count |
 | `04_metrics_walkthrough.py` | Acc-7 edges, zero-exclusion, toy MAE / Corr |
 | `05_mini_training.py` | 8-epoch ConcatLate + AdamW + L1 on synthetic text |
+| `06_result_tables.py` | Rank every checked-in CSV by MAE |
 
 `metrics.py` is the headless subset of `single_test` (no `plt.show()`).
 
@@ -37,6 +39,9 @@ Run them from **either** the repo root or `examples/`. `common.py` puts
 - **Honest mismatches.** `02_fusion_forward.py` prints the BERT
   `MLP(64, …)` vs 32-d `EarlyFusionTransformer` size error instead of
   papering over it.
+- **Planted text signal.** `correlated=True` adds a clip-level latent to
+  every text frame. Mean-pooling raw Gaussian BERT noise is too weak for
+  an 8-epoch demo.
 - **Packed lengths** for LSTM/GRU demos are “every clip has length T”.
   That is enough to exercise `has_padding=True` without a real collate.
 

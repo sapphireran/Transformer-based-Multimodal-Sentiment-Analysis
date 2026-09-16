@@ -35,9 +35,12 @@ def main() -> None:
     vision, audio, text, labels = make_aligned_batch(correlated=True, batch_size=8)
     print(describe_batch(vision, audio, text, labels))
     text_mean = text.mean(dim=(1, 2))
-    # Rank correlation is enough to show the helper is not just noise.
-    order_match = (text_mean.argsort() == labels.squeeze(1).argsort()).float().mean()
-    print(f"fraction of rows with matching text-mean vs label rank: {order_match:.2f}")
+    centered_text = text_mean - text_mean.mean()
+    centered_lab = labels.squeeze(1) - labels.mean()
+    pearson = (centered_text * centered_lab).sum() / (
+        centered_text.norm() * centered_lab.norm() + 1e-8
+    )
+    print(f"Pearson r(mean text, label) = {pearson.item():+.3f} (should be clearly positive)")
     print()
     print("These tensors are what ConcatEarly would cat to width", VISUAL_DIM + AUDIO_DIM + BERT_DIM)
     print("or, with GloVe text, width", VISUAL_DIM + AUDIO_DIM + GLOVE_DIM)

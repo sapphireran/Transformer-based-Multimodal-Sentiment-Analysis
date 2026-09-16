@@ -58,9 +58,12 @@ def make_aligned_batch(
     text = torch.randn(batch_size, seq_len, text_dim, **kwargs)
 
     if correlated:
-        signal = text.mean(dim=(1, 2), keepdim=True)
-        noise = 0.15 * torch.randn(batch_size, 1, **kwargs)
-        labels = torch.tanh(0.75 * signal + noise) * 3.0
+        # Plant a clip-level scalar in every text frame, then use a monotone
+        # map of that scalar as the label. Mean-pooling raw Gaussian text is
+        # ~N(0, 1/sqrt(T·F)) and would be drowned by even small label noise.
+        latent = torch.randn(batch_size, 1, **kwargs)
+        text = text + latent.unsqueeze(1)
+        labels = torch.tanh(latent) * 3.0
     else:
         labels = torch.rand(batch_size, 1, **kwargs) * 6.0 - 3.0
 

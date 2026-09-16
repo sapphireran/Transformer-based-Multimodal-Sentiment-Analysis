@@ -95,6 +95,7 @@ No `.pt` weights are in git (and `.gitignore` keeps it that way).
 | `03_gmtm_forward.py` | `GatedMultiTransfomerModel` | one forward + param count |
 | `04_metrics_walkthrough.py` | `metrics.py` only | prints bin edges and scores |
 | `05_mini_training.py` | ConcatLate + LSTM + `train`-like loop | 8 tiny epochs on synthetic data |
+| `06_result_tables.py` | none (stdlib csv) | ranks the git CSVs by MAE |
 
 ## Call graph (MOSEI BERT fusion sweep)
 

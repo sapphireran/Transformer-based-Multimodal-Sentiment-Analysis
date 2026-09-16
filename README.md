@@ -88,6 +88,7 @@ python examples/02_fusion_forward.py
 python examples/03_gmtm_forward.py
 python examples/04_metrics_walkthrough.py
 python examples/05_mini_training.py
+python examples/06_result_tables.py
 ```
 
 Each script prints shapes, a few numeric checks, and (for the mini trainer) a

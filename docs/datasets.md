@@ -141,8 +141,9 @@ exercised without SDK, pickle, or GPU.
 `examples/common.py` defines `make_aligned_batch` with:
 
 - `VISUAL_DIM = 35`, `AUDIO_DIM = 74`, `BERT_DIM = 768`, `GLOVE_DIM = 300`
-- labels uniform in [-3, 3]
-- optional correlation between the **mean text channel** and the label, so
-  the mini trainer in `05_mini_training.py` has a learnable signal
+- labels uniform in [-3, 3] by default
+- `correlated=True` plants a clip-level latent in every text frame and
+  sets the label to `3 * tanh(latent)` so `05_mini_training.py` has a
+  learnable signal (mean-pooling raw Gaussian text is too weak)
 
 Use that helper whenever a new example needs MOSI-shaped tensors.

@@ -46,7 +46,10 @@ def regression_and_bins(truths, results) -> dict[str, float]:
     """MAE / MSE / Pearson r plus Acc-7 / Acc-5 / Acc-2 / F1."""
     pred = np.asarray(results, dtype=np.float64).reshape(-1)
     truth = np.asarray(truths, dtype=np.float64).reshape(-1)
-    corr, _ = pearsonr(truth, pred)
+    if np.std(pred) < 1e-12 or np.std(truth) < 1e-12:
+        corr = float("nan")
+    else:
+        corr, _ = pearsonr(truth, pred)
     mse = float(np.mean((truth - pred) ** 2))
     mae = float(np.mean(np.abs(truth - pred)))
     acc7 = float(accuracy_score(split_uniform_7(truth), split_uniform_7(pred)))
