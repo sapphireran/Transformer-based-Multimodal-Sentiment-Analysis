@@ -22,8 +22,9 @@ def test_uniform_edges_span_minus_three_to_three():
 
 
 def test_split_uniform_7_known_points():
-    # digitize is left-closed; 0.0 lands in the center bin (4)
-    values = np.array([-3.0, -0.4, 0.0, 0.4, 3.0])
+    # digitize is left-closed; 0.0 lands in the center bin (4).
+    # ±0.4 both sit inside the center bin (edges at ±6/7), so use ±1.5.
+    values = np.array([-3.0, -1.5, 0.0, 1.5, 3.0])
     bins = split_uniform_7(values)
     assert bins[0] == 1
     assert bins[-1] == 7

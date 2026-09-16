@@ -113,7 +113,7 @@ def run(
         train_loss = _epoch(model, data["train"], batch_size, device, optimizer, keep)
         valid_loss = _epoch(model, data["valid"], batch_size, device, None, keep)
         history.append({"epoch": epoch, "train_l1": train_loss, "valid_l1": valid_loss})
-        print(f"epoch {epoch:02d}  train_l1={train_loss:.4f}  valid_l1={valid_l1:.4f}")
+        print(f"epoch {epoch:02d}  train_l1={train_loss:.4f}  valid_l1={valid_loss:.4f}")
 
     y, yhat = _predict(model, data["valid"], batch_size, device, keep)
     metrics = evaluate_affect_batch(y, yhat)
@@ -162,7 +162,7 @@ def main() -> int:
     if not report["ok"]:
         print("train L1 did not decrease; failing the smoke test")
         return 1
-    print("smoke test passed: train L1 decreased")
+    print("smoke test passed: train L1 decreased (valid L1 is not part of the gate)")
     return 0
 
 

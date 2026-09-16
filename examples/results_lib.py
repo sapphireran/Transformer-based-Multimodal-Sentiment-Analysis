@@ -8,7 +8,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, List, Sequence
 
-from .paths import MOSI_RESULTS_DIR, RESULTS_DIR
+try:
+    from .paths import MOSI_RESULTS_DIR, RESULTS_DIR
+except ImportError:  # running as a script next to this file
+    from paths import MOSI_RESULTS_DIR, RESULTS_DIR
 
 METRIC_KEYS = ("MAE", "ACC7", "ACC5", "ACC2", "Corr", "F1")
 

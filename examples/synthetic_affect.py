@@ -55,6 +55,18 @@ class AffectShapes:
         )
 
 
+def _unit_vector(rng: np.random.Generator, dim: int) -> np.ndarray:
+    vec = rng.normal(0.0, 1.0, size=(dim,)).astype(np.float32)
+    norm = float(np.linalg.norm(vec))
+    return vec / (norm if norm > 0 else 1.0)
+
+
+def _projected_score(arr: np.ndarray, direction: np.ndarray) -> np.ndarray:
+    """Time-mean then unit-project, scaled to roughly N(0, 1)."""
+    pooled = arr.mean(axis=1)
+    return (pooled @ direction) * np.sqrt(arr.shape[1])
+
+
 def make_split_arrays(
     n: int,
     shapes: AffectShapes | None = None,
@@ -62,28 +74,31 @@ def make_split_arrays(
     text_weight: float = 1.0,
     audio_weight: float = 0.15,
     visual_weight: float = 0.10,
-    noise: float = 0.25,
+    noise: float = 0.10,
 ) -> Dict[str, np.ndarray]:
     """Return a dict of numpy arrays with the pickle-split schema.
 
     ``labels`` has shape ``(N, 1)``. Sequences have shape ``(N, T, F)``.
+    Sentiment is a bounded function of a fixed projection of the text
+    stream, plus weak audio/vision leaks — the same qualitative story as
+    the BERT ablation table.
     """
     shapes = shapes or AffectShapes()
     rng = np.random.default_rng(seed)
     t, n_ = shapes.max_len, n
 
+    vis_dir = _unit_vector(rng, shapes.visual)
+    aud_dir = _unit_vector(rng, shapes.audio)
+    txt_dir = _unit_vector(rng, shapes.text)
+
     vision = rng.normal(0.0, 1.0, size=(n_, t, shapes.visual)).astype(np.float32)
     audio = rng.normal(0.0, 1.0, size=(n_, t, shapes.audio)).astype(np.float32)
     text = rng.normal(0.0, 1.0, size=(n_, t, shapes.text)).astype(np.float32)
 
-    # Hidden sentiment: mean of a fixed projection of text, plus weak leaks.
-    text_score = text.mean(axis=(1, 2))
-    audio_score = audio.mean(axis=(1, 2))
-    vision_score = vision.mean(axis=(1, 2))
     raw = (
-        text_weight * text_score
-        + audio_weight * audio_score
-        + visual_weight * vision_score
+        text_weight * _projected_score(text, txt_dir)
+        + audio_weight * _projected_score(audio, aud_dir)
+        + visual_weight * _projected_score(vision, vis_dir)
         + rng.normal(0.0, noise, size=(n_,))
     )
     # squash to the MOSI/MOSEI Likert-ish range
@@ -97,6 +112,9 @@ def make_split_arrays(
         "text": text,
         "labels": labels,
         "id": ids,
+        "_text_dir": txt_dir,
+        "_audio_dir": aud_dir,
+        "_vision_dir": vis_dir,
     }
 
 

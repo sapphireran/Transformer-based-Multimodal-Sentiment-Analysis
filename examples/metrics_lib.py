@@ -68,7 +68,10 @@ def evaluate_affect_batch(truths, preds) -> Dict[str, float]:
     yhat = _as_1d(preds)
     if y.size == 0:
         raise ValueError("empty arrays")
-    corr, _ = pearsonr(y, yhat)
+    if np.std(y) < 1e-12 or np.std(yhat) < 1e-12:
+        corr = float("nan")
+    else:
+        corr, _ = pearsonr(y, yhat)
     mse = float(np.mean((y - yhat) ** 2))
     mae = float(np.mean(np.abs(y - yhat)))
     acc7 = float(accuracy_score(split_uniform_7(y), split_uniform_7(yhat)))

@@ -7,6 +7,7 @@ from examples.synthetic_affect import (
     GLOVE_DIM,
     VISUAL_DIM,
     AffectShapes,
+    _projected_score,
     batch_from_split,
     make_pickle_dict,
     make_split_arrays,
@@ -34,7 +35,7 @@ def test_pickle_dict_has_three_splits():
 
 
 def test_batch_and_zero_out():
-    split = make_split_arrays(6, AffectShapes.for_embedding("bert", max_len=8), seed=3)
+    split = make_split_arrays(48, AffectShapes.for_embedding("bert", max_len=8), seed=3)
     vision, audio, text, labels = batch_from_split(split, batch_size=3, offset=2)
     assert vision.shape[0] == 3
     assert labels.shape == (3, 1)
@@ -42,10 +43,12 @@ def test_batch_and_zero_out():
     assert torch.count_nonzero(z_v) == 0
     assert torch.count_nonzero(z_a) == 0
     assert torch.equal(z_t, text)
-    # labels should still correlate with text more than with vision on this generator
-    text_score = split["text"].mean(axis=(1, 2))
-    vis_score = split["vision"].mean(axis=(1, 2))
+    # labels are a projection of text plus weak leaks; the hidden text
+    # direction must dominate the visual one
     y = split["labels"].reshape(-1)
-    r_text = np.corrcoef(text_score, y)[0, 1]
-    r_vis = np.corrcoef(vis_score, y)[0, 1]
+    text_score = _projected_score(split["text"], split["_text_dir"])
+    vis_score = _projected_score(split["vision"], split["_vision_dir"])
+    r_text = float(np.corrcoef(text_score, y)[0, 1])
+    r_vis = float(np.corrcoef(vis_score, y)[0, 1])
+    assert r_text > 0.8
     assert r_text > r_vis
