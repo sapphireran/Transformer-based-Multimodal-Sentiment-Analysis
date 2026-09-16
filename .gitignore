@@ -1,0 +1,25 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+
+# Trained weights and raw multimodal dumps (not committed)
+*.pt
+*.pth
+*.pkl
+*.hdf5
+*.csd
+
+.DS_Store
+Thumbs.db
+
+# Local experiment scratch
+/artifacts/
+/tmp-lab/
