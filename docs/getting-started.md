@@ -9,9 +9,16 @@ with PyTorch 2.x and CUDA.
 python3 -m pip install -r requirements.txt
 ```
 
-`torch` CPU wheels are sufficient for `examples/` and `tests/`. A GPU is only
-required if you uncomment `train(...)` in the `model/train_*.py` scripts — those
-call `.cuda()` on every encoder, fusion module, and batch.
+A default `pip install torch` on Linux may pull the large CUDA wheel. For the
+examples and tests a CPU wheel is enough:
+
+```bash
+python3 -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+python3 -m pip install -r requirements.txt
+```
+
+A GPU is only required if you uncomment `train(...)` in the `model/train_*.py`
+scripts — those call `.cuda()` on every encoder, fusion module, and batch.
 
 Optional extras, only if you rebuild features from the CMU SDK:
 

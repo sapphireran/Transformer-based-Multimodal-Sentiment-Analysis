@@ -18,6 +18,9 @@ Metric definitions: [`metrics.md`](metrics.md). MOSI protocol warning:
 [`data-pipeline.md`](data-pipeline.md) (merged splits).
 
 `examples/read_result_tables.py` pretty-prints the same files.
+`examples/compare_tables.py` computes BERT−GloVe MAE, text-only vs full GMTM,
+and the MOSI-merged transfer gap. `examples/ablation_zero_mask.py` shows the
+zero-tensor protocol behind the ablation rows.
 
 ## MOSEI · BERT text
 

@@ -68,11 +68,13 @@ A longer file-by-file guide is in [`docs/repo-map.md`](docs/repo-map.md).
 ```bash
 python3 -m pip install -r requirements.txt
 python3 examples/read_result_tables.py
+python3 examples/compare_tables.py
 python3 examples/gmtm_forward.py
 python3 examples/fusion_shapes.py
 python3 examples/metrics_demo.py
 python3 examples/multiframework_demo.py
 python3 examples/dataset_collate_demo.py
+python3 examples/ablation_zero_mask.py
 bash examples/run_all.sh
 python3 -m pytest -q
 ```
