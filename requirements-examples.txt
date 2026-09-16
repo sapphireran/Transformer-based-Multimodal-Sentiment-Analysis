@@ -1,0 +1,7 @@
+# Lighter stack for the synthetic examples and unit tests.
+# Does not require CMU-MOSI / CMU-MOSEI downloads or GPU.
+torch>=2.1
+numpy>=1.24
+scikit-learn>=1.3
+scipy>=1.11
+pytest>=8.0
