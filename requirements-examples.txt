@@ -1,0 +1,3 @@
+# Minimal extras for docs examples and unit tests
+-r requirements.txt
+pytest>=8.0

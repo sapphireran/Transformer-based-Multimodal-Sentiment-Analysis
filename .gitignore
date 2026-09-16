@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+.env
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Local experiment artifacts (keep result CSVs)
+*.pt
+*.pth
+*.pkl
+*.hdf5
+*.h5
+*.csd
+
+# GloVe vectors are downloaded separately; the tracked file is a placeholder
+# model/data/glove.840B.300d.txt
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

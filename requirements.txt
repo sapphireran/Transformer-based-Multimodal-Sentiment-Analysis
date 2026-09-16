@@ -1,0 +1,14 @@
+# Core training / evaluation stack used by model/*.py
+torch>=2.1
+numpy>=1.24
+scikit-learn>=1.3
+scipy>=1.11
+tqdm>=4.66
+matplotlib>=3.8
+memory-profiler>=0.61
+
+# Optional: only needed to rebuild pickles from CMU-MOSI / CMU-MOSEI CSD files
+# mmsdk
+# h5py
+# torchtext
+# transformers
