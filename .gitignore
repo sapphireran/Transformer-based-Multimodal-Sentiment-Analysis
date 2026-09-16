@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# Notebooks and local data
+.ipynb_checkpoints/
+*.pkl
+*.hdf5
+*.csd
+*.pt
+*.pth
+glove.840B.300d.txt
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Example / test artifacts
+examples/output/
