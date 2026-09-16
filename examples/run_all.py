@@ -11,6 +11,7 @@ import fusion_forward
 import gmtm_forward
 import gmtm_toy_train
 import packed_vs_padded
+import summarize_results
 
 
 def main() -> int:
@@ -20,6 +21,7 @@ def main() -> int:
         ("gmtm_toy_train", gmtm_toy_train.run),
         ("evaluate_metrics", evaluate_metrics.run),
         ("packed_vs_padded", packed_vs_padded.run),
+        ("summarize_results", summarize_results.run),
     ]
     results = []
     failed = False

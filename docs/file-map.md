@@ -35,6 +35,8 @@ Personal index of every tracked path that is not a git hook.
 | `gmtm_toy_train.py` | 25-step L1 train on synthetic labels |
 | `evaluate_metrics.py` | Acc7 / Acc5 / Acc2 on known scores |
 | `packed_vs_padded.py` | Mimic `_process_1` vs `_process_2` |
+| `summarize_results.py` | Rank committed CSV tables by MAE / Acc7 |
+| `run_all.py` | Run every example and exit non-zero on failure |
 
 ## `tests/`
 
@@ -44,6 +46,7 @@ Personal index of every tracked path that is not a git hook.
 | `test_metrics.py` | Bin edges and exclude-zero F1 |
 | `test_fusion_forward.py` | CPU forward shapes |
 | `test_gmtm.py` | GMTM output `(B, 1)` and a train step |
+| `test_summarize_results.py` | Recorded CSV rankings |
 
 ## `model/` — training
 

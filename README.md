@@ -89,6 +89,8 @@ python3 examples/fusion_forward.py
 python3 examples/gmtm_forward.py
 python3 examples/gmtm_toy_train.py
 python3 examples/evaluate_metrics.py
+python3 examples/summarize_results.py
+python3 examples/run_all.py
 python3 -m pytest tests -q
 ```
 

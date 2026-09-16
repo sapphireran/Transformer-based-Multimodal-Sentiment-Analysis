@@ -41,12 +41,12 @@ def test_zero_ablation_changes_output():
 
 
 def test_toy_train_loss_moves():
-    result = run_train(steps=12, batch_size=8, lr=3e-3)
-    assert result["steps"] == 12
+    result = run_train(steps=20, batch_size=8, lr=3e-3)
+    assert result["steps"] == 20
     assert result["n_params"] > 0
-    # A connected graph with text-derived labels should not explode.
-    assert result["train_mae_last5"] < 5.0
-    assert result["test_mae"] < 5.0
+    assert result["loss_went_down"] is True
+    assert result["train_mae_last5"] < result["train_mae_first5"]
+    assert result["test_mae"] < 1.5
 
 
 def test_describe_forward_param_count_matches_module():
